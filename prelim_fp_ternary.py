@@ -231,8 +231,19 @@ def plot_weight_histogram_three_regions(model, plot_name):
 
     colors = ['blue', 'green', 'red']
 
+        # Create a histogram plot
+    font = {'family': 'serif', 'serif': ['Times New Roman'], 'size': 28}
+
+    # Set the font properties
+    plt.rc('font', **font)
+    plt.rc('axes', titlesize=32)
+    plt.rc('axes', labelsize=28)
+    plt.rc('xtick', labelsize=24)
+    plt.rc('ytick', labelsize=24)
+    plt.rc('legend', fontsize=24)
+
     # Create a histogram plot
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(10, 8))
     for i in range(num_regions):
         if i == 0:
             label = f'Region {i + 1}'
@@ -248,11 +259,13 @@ def plot_weight_histogram_three_regions(model, plot_name):
 
 
     for boundary in region_boundaries:
-        plt.axvline(x=boundary, color='black', linestyle='--')
+        plt.axvline(x=boundary, color='black', linestyle='--', linewidth = 3)
 
-    
-    plt.xlabel('Data Values')
-    plt.ylabel('Frequency')
+
+    plt.grid( linestyle = '--', linewidth = 0.5)
+
+    plt.xlabel('Weight Value')
+    plt.ylabel('Frequency ($\\times$ 1000)')
 
 
     plt.savefig(plot_name, dpi=300) 
@@ -281,28 +294,39 @@ def plot_weight_histogram_three_regions_ternary(model, plot_name):
     colors = ['blue', 'green', 'red']
 
     # Create a histogram plot
-    plt.figure(figsize=(10, 6))
+    font = {'family': 'serif', 'serif': ['Times New Roman'], 'size': 14}
+
+    # Set the font properties
+    plt.rc('font', **font)
+    plt.rc('axes', titlesize=32)
+    plt.rc('axes', labelsize=28)
+    plt.rc('xtick', labelsize=24)
+    plt.rc('ytick', labelsize=24)
+    plt.rc('legend', fontsize=24)
+
+    plt.figure(figsize=(12, 10))
     for i in range(num_regions):
         if i == 0:
             label = f'Region {i + 1}'
         else:
             label = f'Region {i + 1}'
         if i == num_regions - 1:
-            plt.hist(all_weights[i * elements_per_region:], bins=20, alpha=0.6, color=colors[i], label=label)
+            plt.hist(all_weights[i * elements_per_region:], bins=5, alpha=0.6, color=colors[i], label=label)
         else:
             if i == 1:
-                plt.hist(all_weights[i * elements_per_region:(i + 1) * elements_per_region], bins=20, alpha=0.6, color=colors[i], label=label)
+                plt.hist(all_weights[i * elements_per_region:(i + 1) * elements_per_region], bins=5, alpha=0.6, color=colors[i], label=label)
             else:
-                plt.hist(all_weights[i * elements_per_region:(i + 1) * elements_per_region], bins=20, alpha=0.6, color=colors[i], label=label)
+                plt.hist(all_weights[i * elements_per_region:(i + 1) * elements_per_region], bins=5, alpha=0.6, color=colors[i], label=label)
 
 
-    for boundary in region_boundaries:
-        plt.axvline(x=boundary, color='black', linestyle='--')
 
     
-    plt.xlabel('Data Values')
-    plt.ylabel('Frequency')
+    plt.grid( linestyle = '--', linewidth = 0.5)
 
+    plt.xlabel('Weight Value')
+    plt.ylabel('Frequency ($\\times$ 1000)')
+
+    
 
 
     plt.savefig(plot_name, dpi=300) 

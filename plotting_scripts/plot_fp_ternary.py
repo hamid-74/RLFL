@@ -15,14 +15,24 @@ file2_path = '../results/prelim_results/fp_ternary/ternary_acc.json'
 data1 = read_json_file(file1_path)
 data2 = read_json_file(file2_path)
 
+font = {'family': 'serif', 'serif': ['Times New Roman'], 'size': 14}
+
+# Set the font properties
+plt.rc('font', **font)
+plt.rc('axes', titlesize=32)
+plt.rc('axes', labelsize=28)
+plt.rc('xtick', labelsize=24)
+plt.rc('ytick', labelsize=24)
+plt.rc('legend', fontsize=24)
+
 # Create a plot using Matplotlib
-plt.figure(figsize=(8, 4))  # Set the figure size
+plt.figure(figsize=(10, 8))  # Set the figure size
 
 # Plot data from the first file in blue
-plt.plot(data1, label='Full Precision', color='seagreen')
+plt.plot(data1, label='Full Precision', color='seagreen', linewidth = 3)
 
 # Plot data from the second file in red
-plt.plot(data2, label='Ternary', color='royalblue')
+plt.plot(data2, label='Ternary', color='royalblue' , linewidth = 3)
 
 plt.grid( linestyle = '--', linewidth = 0.5)
 
@@ -45,13 +55,13 @@ data1 = read_json_file(file1_path)
 data2 = read_json_file(file2_path)
 
 # Create a plot using Matplotlib
-plt.figure(figsize=(8, 4))  # Set the figure size
+plt.figure(figsize=(10, 8))  # Set the figure size
 
 # Plot data from the first file in blue
-plt.plot(data1, label='Full Precision', color='seagreen')
+plt.plot(data1, label='Full Precision', color='seagreen', linewidth = 3)
 
 # Plot data from the second file in red
-plt.plot(data2, label='Ternary', color='royalblue')
+plt.plot(data2, label='Ternary', color='royalblue', linewidth = 3)
 
 plt.grid( linestyle = '--', linewidth = 0.5)
 
