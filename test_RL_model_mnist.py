@@ -35,10 +35,9 @@ debug = 0
 dataset = 'mnist'
 distribution = 'NIID'
 
-result_folder_name = 'results/RL_test/' + dataset + '_' + distribution + '/'
+result_folder_name = 'results/RL_test_final/' + dataset + '_' + distribution + '/'
 
-# runs = [  'run1', 'run2' ,'run3','run4','run5']
-runs = [   'run1'] # 4 5 to do
+runs = ['run1'] 
 
 
 comms_round = 100
@@ -67,9 +66,9 @@ def create_clients(image_list, label_list, num_clients=100, initial='clients'):
     
     
     size = len(data)//num_clients
-    # size = 378
 
-    print("shard size: ", size)
+
+    # print("shard size: ", size)
     
     shards = [data[i:i + size] for i in range(0, size*num_clients, size)]
 
@@ -235,7 +234,7 @@ def plot_weight_histogram(model, plot_name):
     plt.savefig(plot_name, dpi=300) 
 
 
-def dump_stats(global_acc_loss_action, global_accs, accs_all_clients, max_acc_achieved,folder_name, run):
+def dump_stats(global_acc_loss_action, global_accs, accs_all_clients, max_acc_achieved, folder_name, run):
 
 
 
@@ -279,7 +278,7 @@ elif(dataset=='fmnist'):
 
 X_train = X_train.reshape(X_train.shape[0], 784)
 X_test = X_test.reshape(X_test.shape[0], 784)
-print(y_test[3])
+
 print('x_train shape:', X_train.shape)
 print('y_train shape:', y_train.shape)
 print(X_train.shape[0], 'train samples')
@@ -371,7 +370,7 @@ optimizer = SGD(learning_rate=lr,
                )       
 
 
-build_shape = 784 #(28, 28, 3)  # 1024 <- CIFAR-10    # 784 # for MNIST
+build_shape = 784 # 784 # for MNIST
 
 max_loss = 4
 
@@ -421,11 +420,6 @@ for run in runs:
 
         state = list()
         
-        
-        # if(comm_round < start_point):
-        #     ternary_scale = 1
-        # else:
-        #     ternary_scale = 1
 
         sum_of_scales = 0
 
@@ -543,7 +537,7 @@ for run in runs:
         #test global model and print out metrics after each communications round
         for(X_test, Y_test) in test_batched:
 
-            print('ternary_scale: {} | run: {} | dataset: {}'.format(ternary_scale, run, dataset))
+            print('ternary_scale: {} | max_acc_achieved:  | run: {} | dataset: {}'.format(ternary_scale, max_acc_achieved, run, dataset))
 
             global_acc, global_loss = test_model(X_test, Y_test, global_model, comm_round)
 

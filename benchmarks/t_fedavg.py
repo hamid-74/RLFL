@@ -33,17 +33,11 @@ from imutils import paths
 debug = 0
 
 dataset = 'fmnist'
-distribution = 'NIID'
 
-result_folder_name = 'results/RL_test_final/' + dataset + '_' + distribution + '/'
-
-
-runs = ['run4']
+result_folder_name = 'results/benchmarks/t_fedavg/' + dataset + '/NIID/'
 
 
-comms_round = 100
-# comms_round = 2
-
+runs = ['run1']
 
 
 def create_clients(image_list, label_list, num_clients=100, initial='clients'):
@@ -63,13 +57,19 @@ def create_clients(image_list, label_list, num_clients=100, initial='clients'):
     #randomize the data
     data = list(zip(image_list, label_list))
     random.shuffle(data)  # <- IID
+    
+    # sort data for non-iid
+#     max_y = np.argmax(label_list, axis=-1)
+#     sorted_zip = sorted(zip(max_y, label_list, image_list), key=lambda x: x[0])
+#     data = [(x,y) for _,y,x in sorted_zip]
 
+    #shard data and place at each client
     
     
     size = len(data)//num_clients
+    # size = 378
 
-
-    # print("shard size: ", size)
+    print("shard size: ", size)
     
     shards = [data[i:i + size] for i in range(0, size*num_clients, size)]
 
@@ -173,7 +173,13 @@ def test_categorical (X_test, Y_test,  model):
         label_accuracy = np.mean(true_labels == predicted_labels)
         label_accuracies.append(label_accuracy)
 
+        # print(f'Accuracy for label {label}: {label_accuracy:.4f}')
 
+
+
+
+
+    # print(len(report.keys()))  
 
 def ternarize_weights(local_model):
 
@@ -235,12 +241,10 @@ def plot_weight_histogram(model, plot_name):
     plt.savefig(plot_name, dpi=300) 
 
 
-def dump_stats(global_acc_loss_action, global_accs, accs_all_clients, max_acc_achieved,folder_name, run):
+def dump_stats(global_acc_loss, accs_all_clients, max_acc_achieved, folder_name, run):
 
-
-
-    with open(folder_name + 'global_acc_loss_action_' + run +'.json', 'w') as file:
-        json.dump(global_acc_loss_action, file)
+    with open(folder_name + 'global_acc_loss_' + run +'.json', 'w') as file:
+        json.dump(global_acc_loss, file)
 
     
     with open(folder_name + 'global_accs_'  + run +'.json', 'w') as file:
@@ -268,7 +272,8 @@ class SimpleMLP:
         return model
     
 
-##loading the dataset
+
+
 num_classes = 10 
 
 if(dataset=='mnist'):
@@ -279,7 +284,7 @@ elif(dataset=='fmnist'):
 
 X_train = X_train.reshape(X_train.shape[0], 784)
 X_test = X_test.reshape(X_test.shape[0], 784)
-print(y_test[3])
+
 print('x_train shape:', X_train.shape)
 print('y_train shape:', y_train.shape)
 print(X_train.shape[0], 'train samples')
@@ -343,22 +348,10 @@ for (client_name, data) in clients_rest.items():
 test_batched = tf.data.Dataset.from_tensor_slices((X_test, y_test)).batch(len(y_test))
 
 
-
-
-
-###### loading the RL agent
-RL_model_name = 'saved_RL_agents/fmnist/keras_fmnist_NIID_20' #hardcoded double cheese burger
-# RL_model_name = 'saved_RL_agents/fmnist/keras_fmnist_NIID_980'
-RL_agent = tf.keras.models.load_model(RL_model_name)
-
-RL_agent.compile()
-
-
-
-
-
 lr = 0.01
 
+comms_round = 100
+# comms_round = 2
 
 
 loss='categorical_crossentropy'
@@ -371,10 +364,8 @@ optimizer = SGD(learning_rate=lr,
 
 build_shape = 784 #(28, 28, 3)  # 1024 <- CIFAR-10    # 784 # for MNIST
 
-max_loss = 4
 
 
-actions = [0, 0.25, 0.5, 1]
 
 
 
@@ -389,7 +380,7 @@ for run in runs:
     
     global_model = smlp_global.build(build_shape, 10) 
 
-    global_acc_loss_action = []
+    global_acc_loss = []
 
 
     accs_all_clients = []
@@ -397,35 +388,8 @@ for run in runs:
         accs_all_clients.append([])
     global_accs = []
 
-    initial_state = [0] * 100 + [0] * 10 + [0] + [1] + [0]
-    # initial_state = [0] + [1] + [0]
-    state = list()
-
     #commence global training loop
     for comm_round in range(comms_round):
-
-        if(comm_round == 0):
-            initial_state = np.array(initial_state)
-            input_data = np.array(initial_state).reshape(-1, *initial_state.shape)
-        else:
-            state = np.array(state)
-            input_data = np.array(state).reshape(-1, *state.shape)
-
-        # print(input_data)
-        value_function = RL_agent.predict(input_data)[0]
-        action = np.argmax(value_function)
-        print(value_function)
-        ternary_scale = actions[action]
-
-        state = list()
-        
-        
-        # if(comm_round < start_point):
-        #     ternary_scale = 1
-        # else:
-        #     ternary_scale = 1
-
-        sum_of_scales = 0
 
         # get the global model's weights - will serve as the initial weights for all local models
         global_weights = global_model.get_weights()
@@ -454,9 +418,9 @@ for run in runs:
                     
         
         client_id = 0
-        #loop through each client and create new local model
-        
-        # for client in client_names:
+
+        scaling_factor = 0.1
+
         for iii in range(10):
         
             
@@ -479,35 +443,40 @@ for run in runs:
             
             #fit local model with client's data
 
-            if(distribution == 'NIID'):
-                if(iii<4): 
-                    client = client_names_1234[iii]
-                    history = local_model.fit(clients_batched_1234[client], epochs=1, verbose=0)
-                else: 
-                    client = client_names_rest[iii-4]
-                    history = local_model.fit(clients_batched_rest[client], epochs=1, verbose=0)
-
-            elif(distribution == 'IID'):
-                client = client_names[iii]
-                history = local_model.fit(clients_batched[client], epochs=1, verbose=0)
+            if(iii<4): 
+                client = client_names_1234[iii]
+                local_model.fit(clients_batched_1234[client], epochs=1, verbose=0)
+            else: 
+                client = client_names_rest[iii-4]
+                local_model.fit(clients_batched_rest[client], epochs=1, verbose=0)
 
 
-            scaling_factor = 0.1 # weight_scalling_factor(clients_batched, client)
 
-            if(iii < 4):
+            if(iii < 10):
+                # print("before: ")
+                # for(X_test, Y_test) in test_batched:
+                #     local_acc, local_loss = test_model(X_test, Y_test, local_model, comm_round)
+
+
                 local_weights = ternarize_weights(local_model)
                 local_model.set_weights(local_weights)
-                scaling_factor = ternary_scale * scaling_factor
+               
 
 
+                # if(iii == 1):
+                #     test_categorical(X_test, Y_test, local_model)
+            
+                # print(local_model.get_weights())
+                
+                # print("after: ")
+                # for(X_test, Y_test) in test_batched:
+                #     local_acc, local_loss = test_model(X_test, Y_test, local_model, comm_round)
 
-            sum_of_scales = sum_of_scales + scaling_factor
 
             for(X_test, Y_test) in test_batched:
                 accs = test_model_categorical(X_test, Y_test, local_model)
 
             accs_all_clients[client_id].append(accs)
-            state = state + accs
             
             #scale the model weights and add to list
             
@@ -523,7 +492,6 @@ for run in runs:
         #to get the average over all the local model, we simply take the sum of the scaled weights
         average_weights = sum_scaled_weights(scaled_local_weight_list)
         
-        average_weights = scale_model_weights(average_weights, 1/sum_of_scales)
 
         #update global model 
         global_model.set_weights(average_weights)
@@ -533,7 +501,6 @@ for run in runs:
             temp_global_accs = test_model_categorical(X_test, Y_test, local_model)
 
         global_accs.append(temp_global_accs)
-        state = state + temp_global_accs
 
 
 
@@ -541,21 +508,20 @@ for run in runs:
         #test global model and print out metrics after each communications round
         for(X_test, Y_test) in test_batched:
 
-            print('ternary_scale: {} | max_acc_achieved: {} | run: {} | dataset: {}'.format(ternary_scale, max_acc_achieved,run, dataset))
+            print('T_FedAvg | run: {} | dataset: {}'.format( run, dataset))
 
             global_acc, global_loss = test_model(X_test, Y_test, global_model, comm_round)
 
             if(global_acc > max_acc_achieved):
                 max_acc_achieved = global_acc
             
-            global_acc_loss_action.append((global_acc, global_loss.numpy().tolist(), ternary_scale))
+            global_acc_loss.append((global_acc, global_loss.numpy().tolist()))
             # global_loss_list.append()
-        state = state + [global_acc] + [global_loss/max_loss] + [(comm_round + 1)/10]
         
         # print(temp_global_accs)
 
 
-    dump_stats(global_acc_loss_action, global_accs, accs_all_clients, max_acc_achieved, result_folder_name, run)
+    dump_stats(global_acc_loss, accs_all_clients, max_acc_achieved, result_folder_name, run)
 
     K.clear_session()
 
