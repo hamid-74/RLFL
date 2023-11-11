@@ -34,14 +34,14 @@ from imutils import paths
 
 debug = 0
 
-dataset = 'fmnist'
+dataset = 'mnist'
 
 distribution = 'NIID'
 
 algorithm = 'median'
 
 # runs = [ 'run1', 'run2', 'run3', 'run4', 'run5']
-runs = [ 'run5'] 
+runs = [ 'run1'] 
 
 result_folder_name = '../results/benchmarks/median/' + dataset + '/' + distribution + '/'
 

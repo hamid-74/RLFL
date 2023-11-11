@@ -271,6 +271,7 @@ def dump_stats(global_acc_loss_action, global_accs, accs_all_clients, max_acc_ac
     
 
 
+total_number_weights = 198800
 
 class SimpleMLP:
     @staticmethod

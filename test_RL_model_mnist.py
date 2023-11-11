@@ -537,7 +537,7 @@ for run in runs:
         #test global model and print out metrics after each communications round
         for(X_test, Y_test) in test_batched:
 
-            print('ternary_scale: {} | max_acc_achieved:  | run: {} | dataset: {}'.format(ternary_scale, max_acc_achieved, run, dataset))
+            print('ternary_scale: {} | max_acc_achieved: {}  | run: {} | dataset: {}'.format(ternary_scale, max_acc_achieved, run, dataset))
 
             global_acc, global_loss = test_model(X_test, Y_test, global_model, comm_round)
 

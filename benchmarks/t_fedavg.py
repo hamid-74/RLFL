@@ -32,9 +32,9 @@ from imutils import paths
 
 debug = 0
 
-dataset = 'fmnist'
+dataset = 'mnist'
 
-result_folder_name = 'results/benchmarks/t_fedavg/' + dataset + '/NIID/'
+result_folder_name = '../results/benchmarks/t_fedavg/' + dataset + '/NIID/'
 
 
 runs = ['run1']
@@ -58,18 +58,15 @@ def create_clients(image_list, label_list, num_clients=100, initial='clients'):
     data = list(zip(image_list, label_list))
     random.shuffle(data)  # <- IID
     
-    # sort data for non-iid
-#     max_y = np.argmax(label_list, axis=-1)
-#     sorted_zip = sorted(zip(max_y, label_list, image_list), key=lambda x: x[0])
-#     data = [(x,y) for _,y,x in sorted_zip]
+
 
     #shard data and place at each client
     
     
     size = len(data)//num_clients
-    # size = 378
 
-    print("shard size: ", size)
+
+    # print("shard size: ", size)
     
     shards = [data[i:i + size] for i in range(0, size*num_clients, size)]
 
@@ -362,7 +359,7 @@ optimizer = SGD(learning_rate=lr,
                )       
 
 
-build_shape = 784 #(28, 28, 3)  # 1024 <- CIFAR-10    # 784 # for MNIST
+build_shape = 784 # 784 # for MNIST
 
 
 
@@ -490,11 +487,11 @@ for run in runs:
             K.clear_session()
             
         #to get the average over all the local model, we simply take the sum of the scaled weights
-        average_weights = sum_scaled_weights(scaled_local_weight_list)
+        averaged_weights = sum_scaled_weights(scaled_local_weight_list)
         
 
         #update global model 
-        global_model.set_weights(average_weights)
+        global_model.set_weights(averaged_weights)
 
         temp_global_accs = []
         for(X_test, Y_test) in test_batched:
@@ -508,7 +505,7 @@ for run in runs:
         #test global model and print out metrics after each communications round
         for(X_test, Y_test) in test_batched:
 
-            print('T_FedAvg | run: {} | dataset: {}'.format( run, dataset))
+            print('T_FedAvg | max_acc_achieved:: {} | run: {} | dataset: {}'.format( max_acc_achieved, run, dataset))
 
             global_acc, global_loss = test_model(X_test, Y_test, global_model, comm_round)
 
