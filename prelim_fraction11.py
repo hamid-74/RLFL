@@ -32,12 +32,14 @@ from imutils import paths
 
 debug = 0
 
-dataset = 'fmnist'
+dataset = 'mnist'
 
-result_folder_name = '../results/benchmarks/fl/' + dataset + '/NIID/'
+fraction = 0.8
+
+result_folder_name = 'results/prelim_results/fraction/' + dataset + '/'
 
 
-runs = ['run3']
+runs = ['run1']
 
 
 def create_clients(image_list, label_list, num_clients=100, initial='clients'):
@@ -238,19 +240,19 @@ def plot_weight_histogram(model, plot_name):
     plt.savefig(plot_name, dpi=300) 
 
 
-def dump_stats(global_acc_loss, accs_all_clients, max_acc_achieved, folder_name, run):
+def dump_stats(global_acc_loss, accs_all_clients, max_acc_achieved, folder_name, run, fraction):
 
-    with open(folder_name + 'global_acc_loss_' + run +'.json', 'w') as file:
+    with open(folder_name + 'global_acc_loss_' + str(fraction) + '_' + run + '.json', 'w') as file:
         json.dump(global_acc_loss, file)
 
     
-    with open(folder_name + 'global_accs_'  + run +'.json', 'w') as file:
+    with open(folder_name + 'global_accs_'  + str(fraction) + '_' + run + '.json', 'w') as file:
         json.dump(global_accs, file)
 
-    with open(folder_name + 'accs_clients_'  + run +'.json', 'w') as file:
+    with open(folder_name + 'accs_clients_' + str(fraction) + '_' + run + '.json', 'w') as file:
         json.dump(accs_all_clients, file)
     
-    with open(folder_name + 'max_acc_'  + run +'.json', 'w') as file:
+    with open(folder_name + 'max_acc_'  + str(fraction) + '_' + run +'.json', 'w') as file:
         json.dump(max_acc_achieved, file)
     
 
@@ -296,32 +298,16 @@ X_test /= 255
 
 
 
-X_train_1234 = list()
-y_train_1234 = list()
-X_train_rest = list()
-y_train_rest = list()
-
-for i in range(len(X_train)):
-    if (y_train[i] == 0 or y_train[i] == 1 or y_train[i] == 2 or y_train[i] == 3):
-        X_train_1234.append(X_train[i])
-        y_train_1234.append(y_train[i])
-    else:
-        X_train_rest.append(X_train[i])
-        y_train_rest.append(y_train[i])
 
 
 # Convert class vectors to binary class matrices. This is called one hot encoding.
 y_train = keras.utils.np_utils.to_categorical(y_train, num_classes)
 y_test = keras.utils.np_utils.to_categorical(y_test, num_classes)
 
-y_train_1234 = keras.utils.np_utils.to_categorical(y_train_1234, num_classes)
-y_train_rest = keras.utils.np_utils.to_categorical(y_train_rest, num_classes)
+
 
 clients = create_clients(X_train, y_train, num_clients=100, initial='client')
 
-clients_1234 = create_clients(X_train_1234, y_train_1234, num_clients=41, initial='client_1234')
-
-clients_rest = create_clients(X_train_rest, y_train_rest, num_clients=59, initial='client_rest')
 
 
 clients_batched = dict()
@@ -329,15 +315,6 @@ for (client_name, data) in clients.items():
     clients_batched[client_name] = batch_data(data)
 
 
-clients_batched_1234 = dict()
-for (client_name, data) in clients_1234.items():
-    # print(client_name)
-    clients_batched_1234[client_name] = batch_data(data)
-
-
-clients_batched_rest = dict()
-for (client_name, data) in clients_rest.items():
-    clients_batched_rest[client_name] = batch_data(data)
 
 
 
@@ -359,7 +336,7 @@ optimizer = SGD(learning_rate=lr,
                )       
 
 
-build_shape = 784 # 784 # for MNIST
+build_shape = 784 # 784 for MNIST
 
 
 
@@ -399,18 +376,15 @@ for run in runs:
 
         #randomize client data - using keys
         all_client_names = list(clients_batched.keys())
-        all_client_names_1234 = list(clients_batched_1234.keys())
-        all_client_names_rest = list(clients_batched_rest.keys())
+
 
 
         # print(all_client_names_rest)   
         client_names = random.sample(all_client_names, k=10)
-        client_names_1234 = random.sample(all_client_names_1234, k=4)
-        client_names_rest = random.sample(all_client_names_rest, k=6)
+
         # print(client_names, len(client_names))
         random.shuffle(client_names)
-        random.shuffle(client_names_1234)
-        random.shuffle(client_names_rest)
+
 
                     
         
@@ -419,10 +393,7 @@ for run in runs:
         scaling_factor = 0.1
 
         for iii in range(10):
-        
-            
-
-            
+         
             smlp_local = SimpleMLP()
             local_model = smlp_local.build(build_shape, 10)
             local_model.compile(loss=loss, 
@@ -439,14 +410,14 @@ for run in runs:
             
             
             #fit local model with client's data
+            client = client_names[iii]
+            local_model.fit(clients_batched[client], epochs=1, verbose=0)
 
-            if(iii<4): 
-                client = client_names_1234[iii]
-                local_model.fit(clients_batched_1234[client], epochs=1, verbose=0)
-            else: 
-                client = client_names_rest[iii-4]
-                local_model.fit(clients_batched_rest[client], epochs=1, verbose=0)
+            # print("fraction: {}".format(fraction*10))
 
+            if(iii < (fraction * 10)):
+                local_weights = ternarize_weights(local_model)
+                local_model.set_weights(local_weights)
 
 
             for(X_test, Y_test) in test_batched:
@@ -484,7 +455,7 @@ for run in runs:
         #test global model and print out metrics after each communications round
         for(X_test, Y_test) in test_batched:
 
-            print('FL | max_acc_achieved:: {} | run: {} | dataset: {}'.format( max_acc_achieved, run, dataset))
+            print('Testing Fraction | max_acc_achieved:: {} | run: {} | dataset: {}'.format( max_acc_achieved, run, dataset))
 
             global_acc, global_loss = test_model(X_test, Y_test, global_model, comm_round)
 
@@ -497,7 +468,7 @@ for run in runs:
         # print(temp_global_accs)
 
 
-    dump_stats(global_acc_loss, accs_all_clients, max_acc_achieved, result_folder_name, run)
+    dump_stats(global_acc_loss, accs_all_clients, max_acc_achieved, result_folder_name, run, fraction)
 
     K.clear_session()
 
