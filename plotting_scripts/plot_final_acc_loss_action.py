@@ -123,7 +123,7 @@ def add_average_to_plot_network_overhead(data_list, scalar,label, color):
     
 
 
-dataset = 'fmnist'
+dataset = 'mnist'
 
 file_prefix = '../results/RL_test_final/' + dataset + '_NIID/global_acc_loss_action_'
 runs = ['run1', 'run2', 'run3', 'run4', 'run5']
@@ -173,6 +173,7 @@ add_RLFL_average_to_plot(RLFL_acc, 'RLFL', 'seagreen')
 add_average_to_plot(fedasl_acc, 'FedAsl', 'royalblue')
 add_average_to_plot(median_acc, 'Median', 'darkgoldenrod')
 add_average_to_plot(tmean_acc, 'Trimmed Mean', 'purple')
+
 
 plt.xlim([0, 101])
 plt.grid( linestyle = '--', linewidth = 0.5)
@@ -236,16 +237,16 @@ scalar_FL = (198800 * 32 * 10)/1000000 #Mbits per_iteration
 
 print('T_FEDAVG: {}, RLFL: {}'.format(scalar_t_fedavg, scalar_RLFL))
 
-add_RLFL_average_to_plot_network_overhead(RLFL_acc, scalar_RLFL,'RLFL', 'seagreen')
-add_average_to_plot_network_overhead(t_fedavg_acc, scalar_t_fedavg,'T_FedAvg', 'royalblue')
-add_average_to_plot_network_overhead(fedavg_h_acc, scalar_FL_H,'FedAvg-H', 'darkgoldenrod')
-add_average_to_plot_network_overhead(fl_acc, scalar_FL,'FedAvg', 'purple')
+add_RLFL_average_to_plot_network_overhead(RLFL_acc, scalar_RLFL/8,'RLFL', 'seagreen')
+add_average_to_plot_network_overhead(t_fedavg_acc, scalar_t_fedavg/8,'T-FedAvg', 'royalblue')
+add_average_to_plot_network_overhead(fedavg_h_acc, scalar_FL_H/8,'FedAvg-H', 'darkgoldenrod')
+add_average_to_plot_network_overhead(fl_acc, scalar_FL/8,'FedAvg', 'purple')
 
 # plt.xlim([0, 101])
 plt.grid( linestyle = '--', linewidth = 0.5)
 plt.title( dataset + " Dataset, Training Using Non-IID Data")
 plt.legend() 
-plt.xlabel("Communication Round")
+plt.xlabel("Uploaded Data Volume (MB)")
 plt.ylabel('Accuracy')
 plt.savefig('../plots/final_comparison/acc_comparison_network_overhead_' + dataset + '.png', dpi=300)
 plt.clf()

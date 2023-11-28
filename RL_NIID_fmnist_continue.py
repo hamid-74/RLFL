@@ -323,7 +323,7 @@ episode_RL = 0
 lr = 0.01
 # comms_round = 2
 # comms_round = 300
-comms_round = 150
+comms_round = 100
 
 
 loss='categorical_crossentropy'

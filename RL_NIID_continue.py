@@ -658,16 +658,6 @@ for run in runs:
 
 
 
-    # IID 
-    
-    # plt.figure(figsize=(16,4))
-    # plt.subplot(121)
-    # plt.plot(list(range(0,len(global_loss_list))), global_loss_list)
-    # plt.subplot(122)
-    # plt.plot(list(range(0,len(global_acc_list))), global_acc_list)
-    # print('IID | total comm rounds', len(global_acc_list))
-
-    # plt.show()
     
     with open('results/RL/accs_all_clients_NIID_RL_' + run + '.json', 'w') as file:
         json.dump(accs_all_clients, file)
