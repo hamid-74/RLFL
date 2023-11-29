@@ -21,9 +21,6 @@ RLFL/
 
 
 
-(main scripts and files holding parameters)
-
-
 ## Requirements
 All the required dependencies are listed in requirements.txt and the important ones are listed below:
 - Python 3.8.18
