@@ -8,12 +8,6 @@ Directories:
 
 RLFL/
 ├── benchmarks/
-│   ├── fedasl.py
-│   ├── fedavg_h.py
-│   ├── fl.py
-│   ├── median.py
-│   ├── t_fedavg.py
-│   └── tmean.py
 ├── keras_mnist/
 ├── keras_fmnist/
 ├── plots/
