@@ -5,7 +5,8 @@
 This repository contains the implementation of a Reinforcement Learning (RL) controller for Federated Learning (FL) in Full Precision and Ternary Environments. 
 
 Directories:
-'''
+```
+
 RLFL/
 ├── benchmarks/
 ├── keras_mnist/
@@ -16,7 +17,8 @@ RLFL/
 ├── saved_RL_agents/
 ...
 └── README.md
-'''
+```
+
 
 
 (main scripts and files holding parameters)
