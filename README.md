@@ -38,6 +38,7 @@ For running the trained RL models go to the root directory and execute the follo
 python -W ignore test_RL_model_mnist.py
 python -W ignore test_RL_model_fmnist.py
 ```
+The scripts use the trained models stored in keras_mnist and keras_fmnist to controll the process.
 
 ## RL Training
 To continue the training process of the RL agent run the following commands edit the runs parameter at the start of the following codes and run them as below:
