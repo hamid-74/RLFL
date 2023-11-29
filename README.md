@@ -20,10 +20,9 @@ RLFL
 ├── plotting_scripts
 ├── results
 ├── saved_RL_agents
-.
-. (main scripts and files holding parameters)
-.
 └── README.md
+
+(main scripts and files holding parameters)
 
 
 ## Requirements
