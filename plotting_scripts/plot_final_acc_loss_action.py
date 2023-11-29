@@ -129,15 +129,15 @@ file_prefix = '../results/RL_test_final/' + dataset + '_NIID/global_acc_loss_act
 runs = ['run1', 'run2', 'run3', 'run4', 'run5']
 RLFL_acc, RLFL_loss, RLFL_actions = read_RLFL_folder(file_prefix, runs)
 
-file_prefix = '../results/benchmarks/fedasl/' + dataset + '/NIID(done)/global_acc_loss_action_'
+file_prefix = '../results/benchmarks/fedasl/' + dataset + '/NIID/global_acc_loss_action_'
 runs = ['run1', 'run2', 'run3', 'run4', 'run5']
 fedasl_acc, fedasl_loss = read_result_folder(file_prefix, runs)
 
-file_prefix = '../results/benchmarks/median/' + dataset + '/NIID(done)/global_acc_loss_action_'
+file_prefix = '../results/benchmarks/median/' + dataset + '/NIID/global_acc_loss_action_'
 runs = ['run1', 'run2', 'run3', 'run4', 'run5']
 median_acc, median_loss = read_result_folder(file_prefix, runs)
 
-file_prefix = '../results/benchmarks/tmean/' + dataset + '/NIID(done)/global_acc_loss_action_'
+file_prefix = '../results/benchmarks/tmean/' + dataset + '/NIID/global_acc_loss_action_'
 runs = ['run1', 'run2', 'run3', 'run4', 'run5']
 tmean_acc, tmean_loss = read_result_folder(file_prefix, runs)
 

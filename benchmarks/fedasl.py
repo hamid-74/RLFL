@@ -38,7 +38,7 @@ dataset = 'fmnist'
 
 distribution = 'NIID'
 # runs = [  'run1','run2','run3', 'run4', 'run5']
-runs = [  'run4'] #4 next
+runs = [  'run4'] 
 
 algorithm = 'fedasl'
 
