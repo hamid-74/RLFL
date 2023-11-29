@@ -36,7 +36,7 @@ from imutils import paths
 
 debug = 0
 
-dataset = 'mnist'
+dataset = 'fmnist'
 
 distribution ='NIID'
 
@@ -364,9 +364,9 @@ num_actions_RL = 4 # 0, 0.25, 0.5, 1
 
 
 #originally 4 * input_shape_RL
-if(os.path.exists('keras_mnist')):
+if(os.path.exists('keras_fmnist')):
     print('loading saved model')
-    RL_agent = tf.keras.models.load_model('keras_mnist')
+    RL_agent = tf.keras.models.load_model('keras_fmnist')
 else:
     print('creating a new model')
     RL_agent = tf.keras.models.Sequential([
@@ -388,26 +388,26 @@ gamma_RL = 0.5
 batch_RL = 2
 
 
-if(os.path.exists('replay_RL_mnist.pkl')):
-    with open('replay_RL_mnist.pkl', 'rb') as file:
+if(os.path.exists('replay_RL_fmnist.pkl')):
+    with open('replay_RL_fmnist.pkl', 'rb') as file:
         replay_RL = pickle.load(file)
 else:
     replay_RL = deque(maxlen=1000)
 
-if(os.path.exists('episode_mnist.txt')):
-    with open('episode_mnist.txt', 'r') as file:
+if(os.path.exists('episode_fmnist.txt')):
+    with open('episode_fmnist.txt', 'r') as file:
         episode_RL = int(file.read())
 else: 
     episode_RL = 0
 
-if(os.path.exists('epsilon_mnist.txt')):
-    with open('epsilon_mnist.txt', 'r') as file:
+if(os.path.exists('epsilon_fmnist.txt')):
+    with open('epsilon_fmnist.txt', 'r') as file:
         epsilon_RL = float(file.read())
 else: 
     epsilon_RL = 1
     
-if(os.path.exists('alpha_mnist.txt')):
-    with open('alpha_mnist.txt', 'r') as file:
+if(os.path.exists('alpha_fmnist.txt')):
+    with open('alpha_fmnist.txt', 'r') as file:
         alpha_RL = float(file.read())
 else: 
     alpha_RL = 1
@@ -628,7 +628,7 @@ for run in runs:
     for i in range(comms_round):
         replay_RL.append((states[i],list_of_actions[i],max_acc_achieved,states[i+1]))
         
-    with open('replay_RL_mnist.pkl', 'wb') as file:
+    with open('replay_RL_fmnist.pkl', 'wb') as file:
         pickle.dump(replay_RL, file)
 
     if len(replay_RL)>batch_RL:
@@ -662,18 +662,18 @@ for run in runs:
 
 
             if(episode_RL % 10 == 0):
-                RL_agent.save('saved_RL_agents/main_mnist/keras_mnist_NIID_' + str(episode_RL) + '/')
+                RL_agent.save('saved_RL_agents/main_fmnist/keras_fmnist_NIID_' + str(episode_RL) + '/')
 
-            RL_agent.save('keras_mnist/')
+            RL_agent.save('keras_fmnist/')
             
             epsilon_RL = epsilon_RL * 0.997
             alpha_RL = alpha_RL * 0.997
             episode_RL+=1
 
-            with open('episode_mnist.txt', 'w') as file:
+            with open('episode_fmnist.txt', 'w') as file:
                 file.write(str(episode_RL))
 
-            with open('epsilon_mnist.txt', 'w') as file:
+            with open('epsilon_fmnist.txt', 'w') as file:
                 file.write(str(epsilon_RL))   
 
 

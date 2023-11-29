@@ -347,8 +347,7 @@ test_batched = tf.data.Dataset.from_tensor_slices((X_test, y_test)).batch(len(y_
 
 
 ###### loading the RL agent
-RL_model_name = 'saved_RL_agents/fmnist/keras_fmnist_NIID_20' #hardcoded double cheese burger
-# RL_model_name = 'saved_RL_agents/fmnist/keras_fmnist_NIID_980'
+RL_model_name = 'keras_fmnist' 
 RL_agent = tf.keras.models.load_model(RL_model_name)
 
 RL_agent.compile()

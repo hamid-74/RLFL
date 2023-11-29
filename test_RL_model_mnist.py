@@ -346,10 +346,9 @@ test_batched = tf.data.Dataset.from_tensor_slices((X_test, y_test)).batch(len(y_
 
 
 ###### loading the RL agent
-# RL_model_name = 'saved_RL_agents/mnist/keras_mnist_NIID_980' #hardcoded
-RL_model_name = 'saved_RL_agents/mnist/keras_mnist_NIID_20' #hardcoded extra cheese double hamine
 
-# RL_model_name = 'saved_RL_agents/fmnist/keras_fmnist_NIID_980'
+RL_model_name = 'keras_mnist' 
+
 RL_agent = tf.keras.models.load_model(RL_model_name)
 
 RL_agent.compile()

@@ -38,7 +38,7 @@ result_folder_name = 'results/prelim_results/fp_ternary/'
 
 # runs = [  'run1', 'run2' ,'run3','run4','run5']
 runs = [   'run1'] # 4 5 to do
-start_point = 10
+
 
 def create_clients(image_list, label_list, num_clients=100, initial='clients'):
     ''' return: a dictionary with keys clients' names and value as 
