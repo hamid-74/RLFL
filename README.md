@@ -5,22 +5,23 @@
 This repository contains the implementation of a Reinforcement Learning (RL) controller for Federated Learning (FL) in Full Precision and Ternary Environments. 
 
 ## Directory Map:
-RLFL
+RLFL/
 │
-├── benchmarks
+├── benchmarks/
 │   ├── fedasl.py
 │   ├── fedavg_h.py
 │   ├── fl.py
 │   ├── median.py
 │   ├── t_fedavg.py
 │   └── tmean.py
-├── keras_mnist
-├── keras_fmnist
-├── plots
-├── plotting_scripts
-├── results
-├── saved_RL_agents
+├── keras_mnist/
+├── keras_fmnist/
+├── plots/
+├── plotting_scripts/
+├── results/
+├── saved_RL_agents/
 └── README.md
+
 
 (main scripts and files holding parameters)
 
