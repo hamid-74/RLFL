@@ -45,8 +45,6 @@ algorithm = 'fedasl'
 result_folder_name = '../results/benchmarks/fedasl/' + dataset + '/' + distribution + '/'
 
 
-
-
 def create_clients(image_list, label_list, num_clients=100, initial='clients'):
     ''' return: a dictionary with keys clients' names and value as 
                 data shards - tuple of images and label lists.
