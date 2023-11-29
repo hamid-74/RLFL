@@ -1,10 +1,10 @@
-RLFL: A Reinforcement Learning-Based Aggregation Approach for Federated Learning in Full Precision and Ternary Environments
+# RLFL: A Reinforcement Learning-Based Aggregation Approach for Federated Learning in Full Precision and Ternary Environments
 
-Overview
+## Overview
 
 This repository contains the implementation of a Reinforcement Learning (RL) controller for Federated Learning (FL) in Full Precision and Ternary Environments. 
 
-Directory Map:
+## Directory Map:
 RLFL
 │
 ├── benchmarks
