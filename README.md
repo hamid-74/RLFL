@@ -5,7 +5,7 @@
 This repository contains the implementation of a Reinforcement Learning (RL) controller for Federated Learning (FL) in Full Precision and Ternary Environments. 
 
 Directories:
-
+(''')
 RLFL/
 ├── benchmarks/
 │   ├── fedasl.py
@@ -21,7 +21,7 @@ RLFL/
 ├── results/
 ├── saved_RL_agents/
 └── README.md
-
+(''')
 
 
 (main scripts and files holding parameters)
