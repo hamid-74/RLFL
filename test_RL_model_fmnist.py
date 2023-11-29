@@ -418,11 +418,7 @@ for run in runs:
 
         state = list()
         
-        
-        # if(comm_round < start_point):
-        #     ternary_scale = 1
-        # else:
-        #     ternary_scale = 1
+
 
         sum_of_scales = 0
 
