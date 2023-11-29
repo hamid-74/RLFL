@@ -38,7 +38,7 @@ distribution = 'NIID'
 result_folder_name = 'results/RL_test_final/' + dataset + '_' + distribution + '/'
 
 
-runs = ['run4']
+runs = ['run1']
 
 
 comms_round = 100

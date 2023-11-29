@@ -46,11 +46,11 @@ result_folder_name = 'results/average_rewards/' + dataset + '/'
 model_affix = '0'
 
 
-runs = ['run1']
+runs = ['run242', 'run243', 'run244', 'run245', 'run246', 'run247']
 
 
-# comms_round = 100
-comms_round = 4
+comms_round = 100
+
 
 
 

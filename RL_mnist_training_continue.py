@@ -43,15 +43,11 @@ distribution ='NIID'
 
 result_folder_name = 'results/average_rewards/' + dataset + '/'
 
-model_affix = '0'
+
+runs = ['run242', 'run243', 'run244', 'run245', 'run246', 'run247']
 
 
-runs = ['run1']
-
-
-# comms_round = 100
-comms_round = 4
-
+comms_round = 100
 
 
 def create_clients(image_list, label_list, num_clients=100, initial='clients'):
@@ -242,21 +238,7 @@ def plot_weight_histogram(model, plot_name):
     plt.ylabel('Frequency')
     plt.savefig(plot_name, dpi=300) 
 
-def dump_stats(global_acc_loss_action, global_accs, accs_all_clients, max_acc_achieved, folder_name, model_affix, run):
 
-
-    with open(folder_name + 'global_acc_loss_action_' + model_affix + '_' + run + '.json', 'w') as file:
-        json.dump(global_acc_loss_action, file)
-
-    
-    with open(folder_name + 'global_accs_' + model_affix + '_' + run +'.json', 'w') as file:
-        json.dump(global_accs, file)
-
-    with open(folder_name + 'accs_clients_' + model_affix + '_' + run +'.json', 'w') as file:
-        json.dump(accs_all_clients, file)
-    
-    with open(folder_name + 'max_acc_'  + model_affix + '_' + run +'.json', 'w') as file:
-        json.dump(max_acc_achieved, file)
     
 
 
@@ -623,7 +605,7 @@ for run in runs:
 
 
 
-    # dump_stats(global_acc_loss_action, global_accs, accs_all_clients, max_acc_achieved, result_folder_name, model_affix, run)
+
 
     for i in range(comms_round):
         replay_RL.append((states[i],list_of_actions[i],max_acc_achieved,states[i+1]))
